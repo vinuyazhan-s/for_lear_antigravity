@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Playground Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700&display=swap');
+
+        :root {
+            --pastel-pink: #ffd1dc;
+            --pastel-blue: #aec6cf;
+            --pastel-yellow: #fdfd96;
+            --pastel-green: #77dd77;
+            --pastel-purple: #c3b1e1;
+            --bg-color: #fff0f5;
+            --text-color: #555;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(var(--pastel-pink) 20%, transparent 20%),
+                radial-gradient(var(--pastel-yellow) 20%, transparent 20%);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text y="20" font-size="20">🐾</text></svg>') 12 12, auto;
+        }
+
+        .playground {
+            background: rgba(255, 255, 255, 0.9);
+            border: 8px solid var(--pastel-blue);
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 15px 0 var(--pastel-blue), 0 20px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            width: 350px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff9fb4;
+            margin-top: 0;
+            text-shadow: 2px 2px 0 var(--pastel-yellow);
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .cat-container {
+            font-size: 5.5rem;
+            position: relative;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            z-index: 20;
+        }
+
+        .cat {
+            transition: transform 0.2s ease-out;
+            transform-origin: bottom center;
+            position: absolute;
+            user-select: none;
+        }
+
+        .cat-paw {
+            font-size: 3.5rem;
+            position: absolute;
+            bottom: -15px;
+            right: 80px;
+            opacity: 0;
+            transform-origin: bottom right;
+            user-select: none;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #88c0d0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 4px solid var(--pastel-purple);
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-family: 'Nunito', sans-serif;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
+            background: #fdfdfd;
+            color: var(--text-color);
+        }
+
+        input:focus {
+            border-color: var(--pastel-pink);
+            box-shadow: 0 0 0 5px rgba(255, 209, 220, 0.5);
+            transform: scale(1.02);
+        }
+
+        input::placeholder {
+            color: #d1d1d1;
+        }
+
+        button {
+            background-color: var(--pastel-green);
+            color: white;
+            border: none;
+            border-bottom: 8px solid #5abf5a;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.1s;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+
+        button:active {
+            transform: translateY(8px);
+            border-bottom-width: 0px;
+            margin-bottom: 8px;
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+        }
+
+        .links {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .links a {
+            color: var(--pastel-blue);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .links a:hover {
+            color: var(--pastel-purple);
+        }
+
+        /* Animations */
+        @keyframes bat {
+            0% { transform: rotate(0deg) translateY(0); opacity: 1; }
+            50% { transform: rotate(-40deg) translateY(-25px); opacity: 1; }
+            100% { transform: rotate(0deg) translateY(0); opacity: 1; }
+        }
+
+        @keyframes happy-bounce {
+            0%, 100% { transform: translateY(0) scale(1, 1); }
+            25% { transform: translateY(-40px) scale(0.9, 1.1); }
+            50% { transform: translateY(0) scale(1.1, 0.9); }
+            75% { transform: translateY(-20px) scale(0.95, 1.05); }
+        }
+
+        @keyframes head-shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-20px) rotate(-15deg); }
+            40%, 80% { transform: translateX(20px) rotate(15deg); }
+        }
+
+        .is-batting .cat-paw {
+            animation: bat 0.25s ease-in-out infinite;
+        }
+
+        .is-happy .cat {
+            animation: happy-bounce 1s ease-in-out;
+        }
+
+        .is-error .cat {
+            animation: head-shake 0.5s ease-in-out;
+        }
+        
+        .yarn-ball {
+            position: absolute;
+            font-size: 2.5rem;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            z-index: 100;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));
+        }
+
+        #msgBox {
+            min-height: 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* Background Cats */
+        #bg-cats {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bg-cat {
+            position: absolute;
+            font-size: 4rem;
+            user-select: none;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+            /* smooth transition for flipping */
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-cats"></div>
+
+    <div class="yarn-ball" id="yarn">🧶</div>
+
+    <div class="playground">
+        <div class="cat-container" id="catBox">
+            <div class="cat" id="cat">🐱</div>
+            <div class="cat-paw" id="paw">🐾</div>
+        </div>
+        
+        <form id="loginForm">
+            <h1 id="formTitle">Kitty Playpen</h1>
+            <div id="msgBox"></div>
+
+            <div class="input-group">
+                <label for="nickname">Special Nickname</label>
+                <input type="text" id="nickname" placeholder="e.g. Fluffy..." autocomplete="off">
+            </div>
+            
+            <div class="input-group" id="codeGroup">
+                <label for="code" id="codeLabel">Secret Cat Code</label>
+                <input type="password" id="code" placeholder="Meow meow..." autocomplete="off">
+            </div>
+
+            <div class="input-group" id="rememberKeyGroup" style="display:none;">
+                <label for="rememberKey">Remember Key</label>
+                <input type="text" id="rememberKey" placeholder="A secret word..." autocomplete="off">
+            </div>
+            
+            <button type="submit" id="submitBtn">Let's Play! 🧶</button>
+
+            <div class="links">
+                <a href="#" id="toggleSignup">New kitten? Sign Up</a>
+                <span id="separator"> | </span>
+                <a href="#" id="toggleForgot">Forgot code?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Setup Background Cats
+        const bgCatsContainer = document.getElementById('bg-cats');
+        const bgCats = [];
+        const catEmojis = ['🐈', '🐅', '🐆', '🐈‍⬛', '😻'];
+        for(let i=0; i<5; i++) {
+            const el = document.createElement('div');
+            el.className = 'bg-cat';
+            el.innerText = catEmojis[i % catEmojis.length];
+            bgCatsContainer.appendChild(el);
+            bgCats.push({
+                el: el,
+                x: Math.random() * (window.innerWidth - 60),
+                y: Math.random() * (window.innerHeight - 60),
+                vx: (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2), // random speed 2 to 4
+                vy: (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2)
+            });
+        }
+
+        function animateBgCats() {
+            bgCats.forEach(cat => {
+                cat.x += cat.vx;
+                cat.y += cat.vy;
+                
+                // Bounce off walls
+                if (cat.x < 0 || cat.x > window.innerWidth - 60) {
+                    cat.vx *= -1;
+                    cat.x = Math.max(0, Math.min(cat.x, window.innerWidth - 60));
+                }
+                if (cat.y < 0 || cat.y > window.innerHeight - 60) {
+                    cat.vy *= -1;
+                    cat.y = Math.max(0, Math.min(cat.y, window.innerHeight - 60));
+                }
+                
+                cat.el.style.left = cat.x + 'px';
+                cat.el.style.top = cat.y + 'px';
+                
+                // Flip horizontally based on X direction
+                const scaleX = cat.vx > 0 ? -1 : 1; 
+                cat.el.style.transform = `scaleX(${scaleX})`;
+            });
+            requestAnimationFrame(animateBgCats);
+        }
+        animateBgCats();
+
+        // Main Login Logic
+        const cat = document.getElementById('cat');
+        const paw = document.getElementById('paw');
+        const catBox = document.getElementById('catBox');
+        const loginForm = document.getElementById('loginForm');
+        const inputs = document.querySelectorAll('input');
+        const yarn = document.getElementById('yarn');
+
+        let currentMode = 'login'; // login, signup, forgot_verify, forgot_reset
+        const nickname = document.getElementById('nickname');
+        const code = document.getElementById('code');
+        const rememberKey = document.getElementById('rememberKey');
+        const rememberKeyGroup = document.getElementById('rememberKeyGroup');
+        const codeGroup = document.getElementById('codeGroup');
+        const codeLabel = document.getElementById('codeLabel');
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleSignup = document.getElementById('toggleSignup');
+        const toggleForgot = document.getElementById('toggleForgot');
+        const separator = document.getElementById('separator');
+        const msgBox = document.getElementById('msgBox');
+
+        function setMode(mode) {
+            currentMode = mode;
+            msgBox.innerText = '';
+            msgBox.style.color = '#ff6b6b'; 
+            
+            codeGroup.style.display = 'none';
+            rememberKeyGroup.style.display = 'none';
+            code.value = '';
+            rememberKey.value = '';
+
+            if (mode === 'login') {
+                formTitle.innerText = 'Kitty Playpen';
+                codeGroup.style.display = 'block';
+                codeLabel.innerText = 'Secret Cat Code';
+                submitBtn.innerText = 'Let\'s Play! 🧶';
+                toggleSignup.innerText = 'New kitten? Sign Up';
+                toggleForgot.style.display = 'inline';
+                separator.style.display = 'inline';
+            } else if (mode === 'signup') {
+                formTitle.innerText = 'Adopt a Kitten';
+                codeGroup.style.display = 'block';
+                rememberKeyGroup.style.display = 'block';
+                codeLabel.innerText = 'Secret Cat Code';
+                submitBtn.innerText = 'Sign Up! 🐾';
+                toggleSignup.innerText = 'Already have a kitten? Login';
+                toggleForgot.style.display = 'none';
+                separator.style.display = 'none';
+            } else if (mode === 'forgot_verify') {
+                formTitle.innerText = 'Lost your toy?';
+                rememberKeyGroup.style.display = 'block';
+                submitBtn.innerText = 'Verify Key 🗝️';
+                toggleSignup.innerText = 'Back to Login';
+                toggleForgot.style.display = 'none';
+                separator.style.display = 'none';
+            } else if (mode === 'forgot_reset') {
+                formTitle.innerText = 'New Secret Code';
+                codeGroup.style.display = 'block';
+                codeLabel.innerText = 'New Secret Cat Code';
+                submitBtn.innerText = 'Reset Code! 🐱';
+                toggleSignup.innerText = 'Back to Login';
+                toggleForgot.style.display = 'none';
+                separator.style.display = 'none';
+            }
+        }
+
+        toggleSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            setMode(currentMode === 'login' ? 'signup' : 'login');
+        });
+
+        toggleForgot.addEventListener('click', (e) => {
+            e.preventDefault();
+            setMode('forgot_verify');
+        });
+
+        // Yarn follows cursor
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let yarnX = mouseX;
+        let yarnY = mouseY;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (!catBox.classList.contains('is-happy') && !catBox.classList.contains('is-error')) {
+                const catRect = cat.getBoundingClientRect();
+                const catCenterX = catRect.left + catRect.width / 2;
+                const catCenterY = catRect.top + catRect.height / 2;
+                
+                const deltaX = mouseX - catCenterX;
+                const deltaY = mouseY - catCenterY;
+                
+                const angle = Math.atan2(deltaY, deltaX);
+                const maxStretch = 15;
+                let distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY) / 15;
+                if(distance > maxStretch) distance = maxStretch;
+                
+                const moveX = Math.cos(angle) * distance;
+                const moveY = Math.sin(angle) * distance;
+                
+                cat.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+
+        function animateYarn() {
+            yarnX += (mouseX - yarnX) * 0.15;
+            yarnY += (mouseY - yarnY) * 0.15;
+            
+            const dx = mouseX - yarnX;
+            const dy = mouseY - yarnY;
+            const speed = Math.sqrt(dx*dx + dy*dy);
+            
+            yarn.style.left = yarnX + 'px';
+            yarn.style.top = yarnY + 'px';
+            yarn.style.transform = `translate(-50%, -50%) rotate(${speed * 2}deg)`;
+            
+            requestAnimationFrame(animateYarn);
+        }
+        animateYarn();
+
+        inputs.forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                if(['Tab', 'Enter', 'Shift', 'Control', 'Alt', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+                
+                catBox.classList.add('is-batting');
+                clearTimeout(input.battingTimeout);
+                input.battingTimeout = setTimeout(() => {
+                    catBox.classList.remove('is-batting');
+                }, 200);
+            });
+            
+            input.addEventListener('focus', () => {
+                catBox.classList.remove('is-error', 'is-happy');
+            });
+        });
+
+        function showError(msg) {
+            catBox.classList.add('is-error');
+            msgBox.style.color = '#ff6b6b';
+            msgBox.innerText = msg;
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const n = nickname.value.trim();
+            const c = code.value.trim();
+            const r = rememberKey.value.trim();
+            
+            catBox.classList.remove('is-happy', 'is-error', 'is-batting');
+            cat.style.transform = 'translate(0px, 0px)'; 
+            void catBox.offsetWidth;
+            
+            if (currentMode === 'login' && (!n || !c)) {
+                return showError('Please fill all fields! 🙀');
+            }
+            if (currentMode === 'signup' && (!n || !c || !r)) {
+                return showError('Please fill all fields! 🙀');
+            }
+            if (currentMode === 'forgot_verify' && (!n || !r)) {
+                return showError('Please enter Nickname and Key! 🙀');
+            }
+            if (currentMode === 'forgot_reset' && (!n || !c)) {
+                return showError('Please enter your new code! 🙀');
+            }
+
+            try {
+                let res, data;
+                if (currentMode === 'login') {
+                    res = await fetch('/api/login', {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nickname: n, code: c})
+                    });
+                } else if (currentMode === 'signup') {
+                    res = await fetch('/api/signup', {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nickname: n, code: c, rememberKey: r})
+                    });
+                } else if (currentMode === 'forgot_verify') {
+                    res = await fetch('/api/verify-key', {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nickname: n, rememberKey: r})
+                    });
+                } else if (currentMode === 'forgot_reset') {
+                    res = await fetch('/api/forgot', {
+                        method: 'POST', headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nickname: n, newCode: c, rememberKey: r})
+                    });
+                }
+                
+                data = await res.json();
+                
+                if (data.success) {
+                    catBox.classList.add('is-happy');
+                    msgBox.style.color = '#5abf5a'; // green
+                    
+                    if (currentMode === 'login') {
+                        msgBox.innerText = 'Yay! You are logged in! 😻';
+                    } else if (currentMode === 'signup') {
+                        msgBox.innerText = 'Adopted! You can now login. 😺';
+                        setTimeout(() => setMode('login'), 2500);
+                    } else if (currentMode === 'forgot_verify') {
+                        msgBox.innerText = 'Key verified! Enter new code.';
+                        setTimeout(() => setMode('forgot_reset'), 1500);
+                    } else if (currentMode === 'forgot_reset') {
+                        msgBox.innerText = 'Code reset! You can now login. 😸';
+                        setTimeout(() => setMode('login'), 2500);
+                    }
+                } else {
+                    showError((data.error || 'Something went wrong') + ' 😾');
+                }
+            } catch(err) {
+                showError('Server error! 🙀');
+            }
+        });
+    </script>
+</body>
+</html>
